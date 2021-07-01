@@ -1,0 +1,20 @@
+/*
+ * Angular validation plugin for  Bootstrap 4
+ *  Copyright (c) 2019-2021 Rodziu <mateusz.rohde@gmail.com>
+ *  License: MIT
+ */
+@import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
+@import "../../../dist/angular-bootstrap4-validate.scss";
+
+.page-header {
+  padding-top: 30px;
+  padding-bottom: 9px;
+  margin: 0 0 20px;
+  border-bottom: 1px solid #eee;
+}
+
+#ng-form ng-form {
+  border: 1px dashed;
+  padding: 5px;
+  display: block;
+}

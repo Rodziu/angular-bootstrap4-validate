@@ -1,0 +1,70 @@
+/*!
+ * Angular validation plugin for  Bootstrap 4
+ *  Copyright (c) 2019-2021 Rodziu <mateusz.rohde@gmail.com>
+ *  License: MIT
+ */
+
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+form:not([ngNoForm]) {
+  .form-control, .custom-select, input[type="checkbox"], input[type="radio"] {
+    box-shadow: none;
+  }
+
+  .invalid-feedback, .invalid-tooltip {
+    &:empty {
+      display: none !important;
+    }
+  }
+
+  &.was-validated, .was-validated {
+    @each $state, $data in $form-validation-states {
+      $color: map-get($data, color);
+      $icon: map-get($data, icon);
+
+      .form-check-input.ng-#{$state} {
+        ~ .form-check-label {
+          color: $color;
+        }
+      }
+
+      .ng-#{$state} {
+        & ~ .#{$state}-feedback, & ~ .#{$state}-tooltip, & > .#{$state}-feedback, & > .#{$state}-tooltip {
+          display: block;
+        }
+
+        &:not(form) .form-check-input {
+          ~ .form-check-label {
+            color: $color;
+          }
+        }
+
+        &.form-control,
+        &:not(form) .form-control { // mark .ng-(in)valid form-group children properly
+          border-color: $color;
+
+          @if $enable-validation-icons {
+            padding-right: $input-height-inner;
+            background-image: escape-svg($icon);
+            background-repeat: no-repeat;
+            background-position: center right $input-height-inner-quarter;
+            background-size: $input-height-inner-half $input-height-inner-half;
+          }
+        }
+
+        &.custom-select, > .custom-select {
+          border-color: $color;
+
+          @if $enable-validation-icons {
+            padding-right: $custom-select-feedback-icon-padding-right;
+            background: $custom-select-background, escape-svg($icon) $custom-select-bg no-repeat $custom-select-feedback-icon-position / $custom-select-feedback-icon-size;
+            &[disabled] {
+              background: $custom-select-background, escape-svg($icon) $custom-select-disabled-bg no-repeat $custom-select-feedback-icon-position / $custom-select-feedback-icon-size;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,757 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3 col-xl-2">
+            <ul class="nav flex-column sticky-top mt-4">
+                <li class="nav-item" *ngFor="let n of nav">
+                    <a class="nav-link" href="#{{n.id}}">{{n.title}}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9 col-xl-10 mb-5" data-ng-controller="exampleCtrl as vm">
+            <section id="overview">
+                <h4 class="page-header">Overview</h4>
+                <p>
+                    This plugin integrates form validation in Angular and Bootstrap 4 by extending
+                    <code>ngForm</code>, <code>ngModel</code>, <code>formGroup</code>, <code>formGroupName</code>,
+                    <code>formControl</code> and <code>formControlName</code> directives.<br/>
+                    It also provides a custom CSS file that removes default browser box-shadow from invalid form
+                    controls in validated forms.<br/>
+                    <br/>
+                    This plugin also provides a set of <a href="#additional-validators">additional validators</a>
+                    and can be easily <a href="#i18n">internationalized</a>.
+                </p>
+            </section>
+            <section id="basic-example">
+                <h4 class="page-header">Basic validation example</h4>
+                <div class="card">
+                    <div class="card-header">
+                        All validation errors are added automatically to all elements with <code>[(ngModel)]</code>
+                        directive that are contained in form element.<br/>
+                        Validation errors are displayed upon form submission or input change.<br/>
+                        Also, you can reset form validation state using
+                        <code>ngFormValidate.resetValidation()</code> method.
+                    </div>
+                    <div class="card-body">
+                        <form #form="ngFormValidate" #ngForm="ngForm">
+                            <div class="form-row">
+                                <div class="col-md-3 mb-3">
+                                    <label>First name</label>
+                                    <input type="text" class="form-control" name="first_name"
+                                           [(ngModel)]="basic.first_name" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label>Last name</label>
+                                    <input type="text" class="form-control" name="last_name"
+                                           [(ngModel)]="basic.last_name">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label>Username</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">@</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="username"
+                                               [(ngModel)]="basic.username" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label>Gender</label>
+                                    <select class="form-control" name="gender"
+                                            [(ngModel)]="basic.gender" required>
+                                        <option></option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="checkbox"
+                                               [(ngModel)]="basic.check" id="invalidCheck" required>
+                                        <label class="form-check-label" for="invalidCheck">
+                                            Agree to terms and conditions
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3" ngForm requiredGroup>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="exampleRadios1"
+                                               name="radio" [(ngModel)]="basic.radio" value="1">
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Default radio
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="exampleRadios2"
+                                               name="radio" [(ngModel)]="basic.radio" value="2">
+                                        <label class="form-check-label" for="exampleRadios2">
+                                            Second default radio
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-success" *ngIf="ngForm.valid">
+                                Form is valid!
+                            </div>
+                            <div class="d-flex" style="gap: .25rem">
+                                <button class="btn btn-primary" type="submit">Submit form</button>
+                                <button type="button" class="btn btn-secondary"
+                                        (click)="form.resetValidation()">Reset
+                                </button>
+                                <button type="button" class="btn btn-secondary"
+                                        (click)="form.showValidation()">Show validation
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section id="reactive-forms">
+                <h4 class="page-header">Reactive forms</h4>
+                <div class="card">
+                    <div class="card-header">
+                        It works the same way for reactive forms too - validation errors are added automatically to
+                        all <code>formControl</code> and <code>formControlName</code> directives.
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="reactive" #reactiveForm="ngFormValidate">
+                            <div class="form-row">
+                                <div class="col-md-3 mb-3">
+                                    <label>First name</label>
+                                    <input type="text" class="form-control"
+                                           [formControl]="this.firstName">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label>Last name</label>
+                                    <input type="text" class="form-control"
+                                           formControlName="last_name">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label>Username</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">@</span>
+                                        </div>
+                                        <input type="text" class="form-control"
+                                               formControlName="username">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label>Gender</label>
+                                    <select class="form-control"
+                                            formControlName="gender">
+                                        <option></option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               formControlName="check" id="react_check">
+                                        <label class="form-check-label" for="react_check">
+                                            Agree to terms and conditions
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3" formGroupName="radioGroup">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="react_radio1"
+                                               formControlName="radio" value="1">
+                                        <label class="form-check-label" for="react_radio1">
+                                            Default radio
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="react_radio2"
+                                               formControlName="radio" value="2">
+                                        <label class="form-check-label" for="react_radio2">
+                                            Second default radio
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-success" *ngIf="reactive.valid">
+                                Form is valid!
+                            </div>
+                            <div class="d-flex" style="gap: .25rem">
+                                <button class="btn btn-primary" type="submit">Submit form</button>
+                                <button type="button" class="btn btn-secondary"
+                                        (click)="reactiveForm.resetValidation()">Reset
+                                </button>
+                                <button type="button" class="btn btn-secondary"
+                                        (click)="reactiveForm.showValidation()">Show validation
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section id="tooltips">
+                <h4 class="page-header">Tooltips</h4>
+                <div class="card">
+                    <div class="card-header">
+                        You can use <code>'invalid-tooltip'</code> instead of <code>'invalid-feedback'</code>
+                        by using the <code>validateMode</code> directive on form element.<br/>
+                        Default validateMode can be changed in <code>ValidateConfigService</code>.
+                    </div>
+                    <div class="card-body">
+                        <form name="tooltipForm" validateMode="tooltip">
+                            <div class="form-row">
+                                <div class="col-md-3 mb-3">
+                                    <label>First name</label>
+                                    <input type="text" class="form-control" name="tooltip_first_name"
+                                           [(ngModel)]="tooltip.first_name" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label>Last name</label>
+                                    <input type="text" class="form-control" name="tooltip_last_name"
+                                           [(ngModel)]="tooltip.last_name" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label>Username</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">@</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="tooltip_username"
+                                               [(ngModel)]="tooltip.username" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label>Gender</label>
+                                    <select class="form-control" name="tooltip_gender"
+                                            [(ngModel)]="tooltip.gender" required>
+                                        <option></option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="tooltip_check"
+                                               [(ngModel)]="tooltip.check"
+                                               id="invalidCheck2" required>
+                                        <label class="form-check-label" for="invalidCheck2">
+                                            Agree to terms and conditions
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="exampleRadios3"
+                                               name="ex2radio" [(ngModel)]="tooltip.radio" value="1">
+                                        <label class="form-check-label" for="exampleRadios3">
+                                            Default radio
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="exampleRadios4"
+                                               name="ex2radio" [(ngModel)]="tooltip.radio" value="2" required>
+                                        <label class="form-check-label" for="exampleRadios4">
+                                            Second default radio
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Submit form</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section id="custom-message">
+                <h4 class="page-header">Custom message</h4>
+                <div class="card">
+                    <div class="card-header">
+                        You can change default error message by using
+                        <code>[errorMessage]="{{'{'}}validatorName: 'validator message'}"</code> input.<br/>
+                        E.g. <code>[errorMessage]="{{'{'}}required: 'custom text'}"</code>
+                        or <code>[errorMessage]="{{'{'}}min: 'custom text'}"</code>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>Required template-driven input with custom message</label>
+                                    <input type="text" class="form-control" name="custom_error"
+                                           [(ngModel)]="customError" required
+                                           [errorMessage]="{required: 'Custom text'}"/>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Required reactive input with custom message</label>
+                                    <input type="text" class="form-control" [formControl]="customErrorReactive"
+                                           [errorMessage]="{required: 'Custom text'}"/>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Submit form</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section id="supported-validators">
+                <h4 class="page-header">Supported validators</h4>
+                <div class="card">
+                    <div class="card-header">
+                        All validators builtin into Angular are supported.
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="col-md-4 mb-3">
+                                    <label>required</label>
+                                    <input type="text" class="form-control" name="supported_required"
+                                           [(ngModel)]="supportedValidators.required" required/>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>pattern</label>
+                                    <input type="text" class="form-control" name="supported_pattern"
+                                           [(ngModel)]="supportedValidators.pattern"
+                                           pattern="^[A-Z]+$"/>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>email</label>
+                                    <input type="email" class="form-control" name="supported_email"
+                                           [(ngModel)]="supportedValidators.email" email/>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-4 mb-3">
+                                    <label>
+                                        dynamic required
+                                        <a href="javascript:" (click)="required=!required">toggle</a>
+                                    </label>
+                                    <input type="number" class="form-control" name="supported_dyn_required"
+                                           [(ngModel)]="supportedValidators.ngRequired"
+                                           [required]="required"/>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>maxlength</label>
+                                    <input type="text" class="form-control" name="supported_maxlength"
+                                           [(ngModel)]="supportedValidators.ngMaxlength"
+                                           [maxlength]="2"/>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>minlength</label>
+                                    <input type="text" class="form-control" name="supported_minlength"
+                                           [(ngModel)]="supportedValidators.ngMinlength"
+                                           [minlength]="10"/>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-4 mb-3">
+                                    <label>min</label>
+                                    <input type="number" class="form-control" name="supported_min"
+                                           [(ngModel)]="supportedValidators.min" min="0" number/>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>max</label>
+                                    <input type="number" class="form-control" name="supported_max"
+                                           [(ngModel)]="supportedValidators.max" max="10" number/>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Submit form</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section id="additional-validators">
+                <h4 class="page-header">Additional validators</h4>
+                <div class="card">
+                    <div class="card-header">
+                        This plugin provides a set of custom validators which are available from
+                        <code>Validators</code> class which extends Angular <code>Validators</code> class.<br/>
+                        All of them are available as directives for template-driven forms too.
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="col-md-4 mb-3">
+                                    <label>number</label>
+                                    <input type="number" class="form-control" name="additional_number"
+                                           [(ngModel)]="additionalValidators.number" number/>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>number reactive</label>
+                                    <input type="number" class="form-control"
+                                           [formControl]="additionalValidators.numberReactive"/>
+                                </div>
+                            </div>
+                            <div class="alert alert-info">
+                                <code>input[type="number"]</code> has a
+                                <a href="https://github.com/angular/angular/issues/2962">known problem</a> in Angular
+                                that wrongly marks its model value as valid when bad input is provided.<br/>
+                                <code>Validators.number</code> validator
+                                (or <code>number</code> validator directive for template-driven forms), checks
+                                <code>element.validity.badInput</code> state to display proper validation error.<br/>
+                                Please note that because of Angular setting value to <code>null</code> this doesn't
+                                work for initial validation.
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <label>url</label>
+                                            <input type="text" class="form-control" name="additional_url"
+                                                   [(ngModel)]="additionalValidators.url" url/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Validators.url()</label>
+                                            <input type="text" class="form-control"
+                                                   [formControl]="additionalValidators.urlReactive"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <label>url="multiple"</label>
+                                            <textarea class="form-control" name="additional_url_multiple"
+                                                      [(ngModel)]="additionalValidators.urlMultiple"
+                                                      url="multiple"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Validators.url('multiple')</label>
+                                            <textarea class="form-control"
+                                                      [formControl]="additionalValidators.urlMultipleReactive"
+                                            ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <label>host</label>
+                                            <input type="text" class="form-control" name="additional_host"
+                                                   [(ngModel)]="additionalValidators.host" host/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Validators.host()</label>
+                                            <input type="text" class="form-control"
+                                                   [formControl]="additionalValidators.hostReactive"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <label>host="multiple"</label>
+                                            <textarea class="form-control" name="additional_host_multiple"
+                                                      [(ngModel)]="additionalValidators.hostMultiple"
+                                                      host="multiple"></textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Validators.host('multiple')</label>
+                                            <textarea class="form-control"
+                                                      [formControl]="additionalValidators.hostMultipleReactive"
+                                            ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 class="page-header pt-3">ngForm / FormGroup validators</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-row mb-3" ngForm equal>
+                                        <div class="col-md-6">
+                                            <label>equal="controlNames: string[]"</label>
+                                            <input type="text" class="form-control" name="additional_equal"
+                                                   [(ngModel)]="additionalValidators.equal1"/>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>&nbsp;</label>
+                                            <input type="text" class="form-control" name="additional_equal2"
+                                                   [(ngModel)]="additionalValidators.equal2"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-row mb-3" [formGroup]="additionalValidators.equalGroup">
+                                        <div class="col-md-6">
+                                            <label>Validators.equal(...controlNames: string[])</label>
+                                            <input type="text" class="form-control" formControlName="equal1"/>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>&nbsp;</label>
+                                            <input type="text" class="form-control" formControlName="equal2"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6" ngForm [requiredGroup]="{value: true}">
+                                            <label>[requiredGroup]="{{'{'}}value: true}"</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       name="additional_required1"
+                                                       [(ngModel)]="additionalValidators.required1"
+                                                       id="additional_required1">
+                                                <label class="form-check-label" for="additional_required1">
+                                                    checkbox 1
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       name="additional_required2"
+                                                       [(ngModel)]="additionalValidators.required2"
+                                                       id="additional_required2">
+                                                <label class="form-check-label" for="additional_required2">
+                                                    checkbox 2
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" ngForm [requiredGroup]="{value: true, mode: 'and'}">
+                                            <label>[requiredGroup]="{{'{'}}value: true}"</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       name="additional_required11"
+                                                       [(ngModel)]="additionalValidators.required3"
+                                                       id="additional_required11">
+                                                <label class="form-check-label" for="additional_required11">
+                                                    checkbox 1
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       name="additional_required21"
+                                                       [(ngModel)]="additionalValidators.required4"
+                                                       id="additional_required21">
+                                                <label class="form-check-label" for="additional_required21">
+                                                    checkbox 2
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6" [formGroup]="additionalValidators.requiredFormGroup">
+                                            <label>Validators.requiredGroup('or', true,
+                                                ...controlNames: string[])</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       formControlName="required1" id="additional_required3">
+                                                <label class="form-check-label" for="additional_required3">
+                                                    checkbox 1
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       formControlName="required2" id="additional_required4">
+                                                <label class="form-check-label" for="additional_required4">
+                                                    checkbox 2
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" [formGroup]="additionalValidators.requiredFormGroup2">
+                                            <label>Validators.requiredGroup('and', true,
+                                                ...controlNames: string[])</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       formControlName="required3" id="additional_required31">
+                                                <label class="form-check-label" for="additional_required31">
+                                                    checkbox 1
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       formControlName="required4" id="additional_required41">
+                                                <label class="form-check-label" for="additional_required41">
+                                                    checkbox 2
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-info">
+                                When you pass no controlNames to ngForm / FormGroup validators
+                                then all of it child controls will be validated.
+                            </div>
+
+                            <button class="btn btn-primary" type="submit">Submit form</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section id="i18n">
+                <h4 class="page-header">i18n</h4>
+                <div class="card">
+                    <div class="card-header">
+                        All default error messages can be configured in <code>ValidateConfigService</code>.<br/>
+                    </div>
+                </div>
+            </section>
+            <section id="input-group-fix">
+                <h4 class="page-header">Input group fix</h4>
+                <div class="card">
+                    <div class="card-header">
+                        This plugin supports a
+                        <a href="https://getbootstrap.com/docs/4.5/components/forms/#input-group-validation-workaround"
+                           rel="nofollow" target="_blank">input group validation workaround</a>
+                        by adding <code>rounded-right</code> css class to the last non-feedback child element
+                        of input-group.<br/>
+                        You can disable this fix in <code>ValidateConfigService</code>
+                        by setting <code>inputGroupFix</code> to <code>false</code>.
+                    </div>
+                    <div class="card-body was-validated">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Without fix</h6>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">@</span>
+                                    </div>
+                                    <input type="text" class="form-control" required/>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>With fix</h6>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">@</span>
+                                    </div>
+                                    <input type="text" class="form-control rounded-right" required/>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="custom-controls">
+                <h4 class="page-header">Custom controls support</h4>
+                <div class="card">
+                    <div class="card-header">
+                        Custom form controls (eg. Angular components) are supported via provided CSS
+                        file that utilizes Angular .ng-invalid/.ng-valid classes.
+                    </div>
+                    <div class="card-body">
+                        <form class="was-validated">
+                            <!-- feedback -->
+                            <div class="form-row mb-3">
+                                <div class="col">
+                                    <div class="custom-select ng-invalid"></div>
+                                    <div class="invalid-feedback">Invalid feedback</div>
+                                    <div class="valid-feedback">Valid feedback</div>
+                                </div>
+                                <div class="col">
+                                    <div class="custom-select ng-valid"></div>
+                                    <div class="invalid-feedback">Invalid feedback</div>
+                                    <div class="valid-feedback">Valid feedback</div>
+                                </div>
+                                <div class="col">
+                                    <div class="ng-invalid">
+                                        <div class="custom-select"></div>
+                                    </div>
+                                    <div class="invalid-feedback">Invalid feedback</div>
+                                    <div class="valid-feedback">Valid feedback</div>
+                                </div>
+                                <div class="col">
+                                    <div class="ng-valid">
+                                        <div class="custom-select"></div>
+                                    </div>
+                                    <div class="invalid-feedback">Invalid feedback</div>
+                                    <div class="valid-feedback">Valid feedback</div>
+                                </div>
+                            </div>
+                            <!-- tooltip -->
+                            <div class="form-row mb-4">
+                                <div class="col">
+                                    <div class="form-control ng-invalid"></div>
+                                    <div class="invalid-tooltip">Invalid feedback</div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-control ng-valid"></div>
+                                    <div class="invalid-tooltip">Invalid feedback</div>
+                                    <div class="valid-tooltip">Valid feedback</div>
+                                </div>
+                                <div class="col">
+                                    <div class="ng-invalid">
+                                        <div class="form-control"></div>
+                                    </div>
+                                    <div class="invalid-tooltip">Invalid feedback</div>
+                                    <div class="valid-tooltip">Valid feedback</div>
+                                </div>
+                                <div class="col">
+                                    <div class="ng-valid">
+                                        <div class="form-control"></div>
+                                    </div>
+                                    <div class="invalid-tooltip">Invalid feedback</div>
+                                    <div class="valid-tooltip">Valid feedback</div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section id="ng-form">
+                <h4 class="page-header">ng-form support</h4>
+                <div class="card">
+                    <div class="card-header">Support for ng-form component (nested forms)</div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="col-md-6 mb-3">
+                                    <label>First name</label>
+                                    <input type="text" class="form-control" name="ngf_first_name"
+                                           [(ngModel)]="nested.first_name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>Last name</label>
+                                    <input type="text" class="form-control" name="ngf_last_name"
+                                           [(ngModel)]="nested.last_name" required>
+                                </div>
+                            </div>
+                            <ng-form name="sub" #sub="ngFormValidate">
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3">
+                                        <label>Username</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">@</span>
+                                            </div>
+                                            <input type="text" class="form-control" name="ngf_username"
+                                                   [(ngModel)]="nested.username"
+                                                   required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <ng-form name="sub2" #form2="ngFormValidate">
+                                            <label>Gender</label>
+                                            <select class="form-control" name="ngf_gender"
+                                                    [(ngModel)]="nested.gender" required>
+                                                <option></option>
+                                                <option>Male</option>
+                                                <option>Female</option>
+                                            </select>
+                                            <button class="btn btn-primary mt-2 mr-2" type="button"
+                                                    (click)="form2.showValidation()">show validation
+                                            </button>
+                                            <button class="btn btn-primary mt-2" type="button"
+                                                    (click)="form2.resetValidation()">reset validation
+                                            </button>
+                                        </ng-form>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary mr-2" type="button" (click)="sub.showValidation()">show
+                                    validation
+                                </button>
+                                <button class="btn btn-primary" type="button" (click)="sub.resetValidation()">reset
+                                    validation
+                                </button>
+                            </ng-form>
+                            <button class="btn btn-primary mt-2" type="submit">Submit form</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<!--
+TODO nested forms - reactive
+-->
