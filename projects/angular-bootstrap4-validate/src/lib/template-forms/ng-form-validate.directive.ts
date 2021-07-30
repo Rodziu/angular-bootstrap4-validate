@@ -21,7 +21,7 @@ import {AbstractValidateElementDirective} from '../abstract-validate-element.dir
 import {DOCUMENT} from '@angular/common';
 
 @Directive({
-    selector: 'form:not([ngNoForm1]),ng-form,[ngForm],[formGroup],[formGroupName]',
+    selector: 'form:not([ngNoForm]),ng-form,[ngForm],[formGroup],[formGroupName]',
     exportAs: 'ngFormValidate'
 })
 export class NgFormValidateDirective extends AbstractValidateElementDirective {
