@@ -20,8 +20,8 @@ export class FormControlNameValidateDirective extends AbstractValidateElementDir
     constructor(
         protected elementRef: ElementRef<HTMLElement | HTMLInputElement>,
         protected config: ValidateConfigService,
-        @Self() @Host() protected ngControl: FormControlName,
-        @Optional() @Host() protected ngFormValidate: NgFormValidateDirective,
+        @Self() protected ngControl: FormControlName,
+        @Optional() protected ngFormValidate: NgFormValidateDirective,
         @Inject(DOCUMENT) protected document: Document,
     ) {
         super();

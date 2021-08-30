@@ -38,10 +38,10 @@ export class NgFormValidateDirective extends AbstractValidateElementDirective {
     protected isGroup = true;
 
     constructor(
-        @Self() @Optional() @Host() protected ngForm: NgForm,
-        @Self() @Optional() @Host() protected formGroup: FormGroupDirective,
-        @Self() @Optional() @Host() protected formGroupName: FormGroupName,
-        @SkipSelf() @Optional() @Host() protected parent: NgFormValidateDirective,
+        @Self() @Optional() protected ngForm: NgForm,
+        @Self() @Optional() protected formGroup: FormGroupDirective,
+        @Self() @Optional() protected formGroupName: FormGroupName,
+        @SkipSelf() @Optional() protected parent: NgFormValidateDirective,
         protected config: ValidateConfigService,
         protected elementRef: ElementRef<HTMLFormElement>,
         @Inject(DOCUMENT) protected document: Document
