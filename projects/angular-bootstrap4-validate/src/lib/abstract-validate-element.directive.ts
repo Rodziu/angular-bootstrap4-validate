@@ -68,8 +68,8 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
 
         this.errorMessages.length = 0;
         if (this.ngControl.errors !== null) {
-            Object.keys(this.ngControl.errors || [])
-                .forEach((error) => {
+            Object.entries(this.ngControl.errors || {})
+                .forEach(([error, errorValue]) => {
                     let msg = this.config.errorMessages[error];
                     if (
                         typeof this.errorMessage !== 'undefined'
@@ -79,9 +79,8 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
                     }
 
                     if (msg) {
-                        const value = this.elementRef.nativeElement.getAttribute(error) || '';
                         this.errorMessages.push(
-                            msg.replace('%s', value)
+                            msg.replace('%s', this.getErrorValue(error, errorValue))
                         );
                     }
                 });
@@ -118,6 +117,37 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
 
                 this.feedbackElement?.previousElementSibling?.classList.remove('rounded-right');
             }
+        }
+    }
+
+    protected getErrorValue(error: string, errorValue: unknown): string {
+        if (errorValue === null) {
+            return '';
+        }
+
+        if (typeof errorValue === 'object') {
+            if (error === 'minlength' || error === 'maxlength') {
+                return (errorValue as Record<string, number>).requiredLength.toString();
+            } else if (error === 'pattern') {
+                return (errorValue as Record<string, string>).requiredPattern;
+            }
+
+            if (error in (errorValue as Record<string, unknown>)) {
+                errorValue = (errorValue as Record<string, unknown>)[error];
+            }
+        }
+
+        switch (typeof errorValue) {
+            case 'number':
+                return errorValue.toString();
+            case 'string':
+                return errorValue;
+            case 'undefined':
+            case 'boolean':
+            case 'function':
+            case 'symbol':
+            default:
+                return '';
         }
     }
 }
