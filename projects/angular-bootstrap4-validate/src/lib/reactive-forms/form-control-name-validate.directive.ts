@@ -5,13 +5,19 @@
  */
 import {Directive, ElementRef, Host, Inject, Input, Optional, Self} from '@angular/core';
 import {FormControlName} from '@angular/forms';
-import {AbstractValidateElementDirective} from '../abstract-validate-element.directive';
+import {AbstractValidateElementDirective, VALIDATE_ELEMENT} from '../abstract-validate-element.directive';
 import {ValidateConfigService} from '../validate-config.service';
 import {NgFormValidateDirective} from '../template-forms/ng-form-validate.directive';
 import {DOCUMENT} from '@angular/common';
 
 @Directive({
-    selector: '[formControlName]'
+    selector: '[formControlName]',
+    providers: [
+        {
+            provide: VALIDATE_ELEMENT,
+            useExisting: FormControlNameValidateDirective
+        }
+    ]
 })
 export class FormControlNameValidateDirective extends AbstractValidateElementDirective {
     @Input() errorMessage?: Record<string, string>;

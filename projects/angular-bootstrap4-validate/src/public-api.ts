@@ -16,4 +16,5 @@ export * from './lib/validators/host-validator.directive';
 export * from './lib/validators/equal-validator.directive';
 export * from './lib/validators/required-group-validator.directive';
 export * from './lib/validators/validators.module';
+export * from './lib/abstract-validate-element.directive';
 export * from './lib/validate.module';

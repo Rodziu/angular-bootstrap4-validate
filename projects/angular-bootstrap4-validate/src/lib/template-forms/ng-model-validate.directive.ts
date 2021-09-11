@@ -8,10 +8,16 @@ import {NgModel} from '@angular/forms';
 import {NgFormValidateDirective} from './ng-form-validate.directive';
 import {DOCUMENT} from '@angular/common';
 import {ValidateConfigService} from '../validate-config.service';
-import {AbstractValidateElementDirective} from '../abstract-validate-element.directive';
+import {AbstractValidateElementDirective, VALIDATE_ELEMENT} from '../abstract-validate-element.directive';
 
 @Directive({
-    selector: '[ngModel]'
+    selector: '[ngModel]',
+    providers: [
+        {
+            provide: VALIDATE_ELEMENT,
+            useExisting: NgModelValidateDirective
+        }
+    ]
 })
 export class NgModelValidateDirective extends AbstractValidateElementDirective {
     @Input() errorMessage?: Record<string, string>;

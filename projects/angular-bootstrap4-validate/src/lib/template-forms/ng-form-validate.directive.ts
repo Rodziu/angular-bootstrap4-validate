@@ -17,12 +17,18 @@ import {
 } from '@angular/core';
 import {AbstractControlDirective, FormGroupDirective, FormGroupName, NgForm} from '@angular/forms';
 import {ValidateConfigService} from '../validate-config.service';
-import {AbstractValidateElementDirective} from '../abstract-validate-element.directive';
+import {AbstractValidateElementDirective, VALIDATE_ELEMENT} from '../abstract-validate-element.directive';
 import {DOCUMENT} from '@angular/common';
 
 @Directive({
     selector: 'form:not([ngNoForm]),ng-form,[ngForm],[formGroup],[formGroupName]',
-    exportAs: 'ngFormValidate'
+    exportAs: 'ngFormValidate',
+    providers: [
+        {
+            provide: VALIDATE_ELEMENT,
+            useExisting: NgFormValidateDirective
+        }
+    ]
 })
 export class NgFormValidateDirective extends AbstractValidateElementDirective {
     @Input() validateMode: 'feedback' | 'tooltip';

@@ -4,7 +4,7 @@
  *  License: MIT
  */
 
-import {AfterViewChecked, ElementRef, Injectable, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewChecked, ElementRef, Injectable, InjectionToken, OnDestroy, OnInit} from '@angular/core';
 import {AbstractControl, AbstractControlDirective} from '@angular/forms';
 import {NgFormValidateDirective} from './template-forms/ng-form-validate.directive';
 import {ValidateConfigService} from './validate-config.service';
@@ -12,6 +12,8 @@ import {ValidateConfigService} from './validate-config.service';
 export interface IValidateAbstractControl extends AbstractControl {
     __elementValidity?: ValidityState;
 }
+
+export const VALIDATE_ELEMENT = new InjectionToken('Validate element');
 
 // eslint-disable-next-line @angular-eslint/use-injectable-provided-in
 @Injectable()

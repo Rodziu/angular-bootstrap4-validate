@@ -3,15 +3,21 @@
  *  Copyright (c) 2019-2021 Rodziu <mateusz.rohde@gmail.com>
  *  License: MIT
  */
-import {Directive, ElementRef, Host, Inject, Input, Optional, Self} from '@angular/core';
+import {Directive, ElementRef, Inject, Input, Optional, Self} from '@angular/core';
 import {FormControlDirective} from '@angular/forms';
-import {AbstractValidateElementDirective} from '../abstract-validate-element.directive';
+import {AbstractValidateElementDirective, VALIDATE_ELEMENT} from '../abstract-validate-element.directive';
 import {ValidateConfigService} from '../validate-config.service';
 import {NgFormValidateDirective} from '../template-forms/ng-form-validate.directive';
 import {DOCUMENT} from '@angular/common';
 
 @Directive({
-    selector: '[formControl]'
+    selector: '[formControl]',
+    providers: [
+        {
+            provide: VALIDATE_ELEMENT,
+            useExisting: FormControlValidateDirective
+        }
+    ]
 })
 export class FormControlValidateDirective extends AbstractValidateElementDirective {
     @Input() errorMessage?: Record<string, string>;
