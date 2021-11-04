@@ -38,6 +38,9 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
             (this.ngControl.control as IValidateAbstractControl).__elementValidity
                 = this.elementRef.nativeElement.validity;
         }
+        if (!this.feedbackElementContainer && this.elementRef.nativeElement.classList.contains('form-group')) {
+            this.feedbackElementContainer = this.elementRef.nativeElement;
+        }
     }
 
     // eslint-disable-next-line @angular-eslint/contextual-lifecycle
@@ -47,7 +50,8 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
         }
 
         if (!this.isGroup && this.ngControl.dirty) {
-            this.elementRef.nativeElement.parentElement?.classList.add('was-validated');
+            (this.feedbackElementContainer || this.elementRef.nativeElement.parentElement)
+                ?.classList.add('was-validated');
         }
 
         if ( // prevent creating feedbackElement when its not yet needed
