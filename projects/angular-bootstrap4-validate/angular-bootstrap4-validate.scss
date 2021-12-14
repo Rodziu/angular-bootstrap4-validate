@@ -29,7 +29,7 @@ form:not([ngNoForm]),ng-form,[ngForm],[formGroup],[formGroupName] {
         }
       }
 
-      .ng-#{$state} {
+      .ng-#{$state}, &.ng-#{$state} {
         & ~ .#{$state}-feedback, & ~ .#{$state}-tooltip, & > .#{$state}-feedback, & > .#{$state}-tooltip {
           display: block;
         }
