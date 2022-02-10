@@ -3,7 +3,7 @@
  *  Copyright (c) 2019-2021 Rodziu <mateusz.rohde@gmail.com>
  *  License: MIT
  */
-import {Directive, ElementRef, Host, Inject, Input, Optional, Self} from '@angular/core';
+import {Directive, ElementRef, Host, Inject, Input, KeyValueDiffers, Optional, Self} from '@angular/core';
 import {NgModel} from '@angular/forms';
 import {NgFormValidateDirective} from './ng-form-validate.directive';
 import {DOCUMENT} from '@angular/common';
@@ -26,6 +26,7 @@ export class NgModelValidateDirective extends AbstractValidateElementDirective {
     constructor(
         protected elementRef: ElementRef<HTMLElement | HTMLInputElement>,
         protected config: ValidateConfigService,
+        protected keyValueDiffers: KeyValueDiffers,
         @Self() protected ngControl: NgModel,
         @Optional() protected ngFormValidate: NgFormValidateDirective,
         @Inject(DOCUMENT) protected document: Document,

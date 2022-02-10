@@ -4,7 +4,15 @@
  *  License: MIT
  */
 
-import {AfterViewChecked, ElementRef, Injectable, InjectionToken, OnDestroy, OnInit} from '@angular/core';
+import {
+    AfterViewChecked,
+    ElementRef,
+    Injectable,
+    InjectionToken,
+    KeyValueDiffer, KeyValueDiffers,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {AbstractControl, AbstractControlDirective} from '@angular/forms';
 import {NgFormValidateDirective} from './template-forms/ng-form-validate.directive';
 import {ValidateConfigService} from './validate-config.service';
@@ -22,6 +30,7 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
     abstract errorMessage?: Record<string, string>;
 
     private feedbackElement?: HTMLElement;
+    private differ?: KeyValueDiffer<string, unknown>;
     public errorMessages: string[] = [];
 
     protected abstract ngControl: AbstractControlDirective;
@@ -29,6 +38,7 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
     protected abstract elementRef: ElementRef<HTMLElement | HTMLInputElement>;
     protected abstract document: Document;
     protected abstract config: ValidateConfigService;
+    protected abstract keyValueDiffers: KeyValueDiffers;
     protected isGroup = false;
     protected feedbackElementContainer?: HTMLElement;
 
@@ -54,7 +64,7 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
                 ?.classList.add('was-validated');
         }
 
-        if ( // prevent creating feedbackElement when its not yet needed
+        if ( // prevent creating feedbackElement when it's not yet needed
             !this.feedbackElement
             && this.ngControl.valid
         ) {
@@ -70,6 +80,12 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
             if (this.config.inputGroupFix) {
                 this.inputGroupFix();
             }
+
+            this.differ = this.keyValueDiffers.find({}).create();
+        }
+
+        if (!this.differ?.diff(this.ngControl.errors || {})) {
+            return;
         }
 
         this.errorMessages.length = 0;

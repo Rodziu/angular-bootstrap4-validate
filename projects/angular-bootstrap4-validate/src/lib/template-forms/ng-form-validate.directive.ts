@@ -9,7 +9,7 @@ import {
     ElementRef,
     Host,
     Inject,
-    Input,
+    Input, KeyValueDiffers,
     Optional,
     QueryList,
     Self,
@@ -50,6 +50,7 @@ export class NgFormValidateDirective extends AbstractValidateElementDirective {
         @SkipSelf() @Optional() protected parent: NgFormValidateDirective,
         protected config: ValidateConfigService,
         protected elementRef: ElementRef<HTMLFormElement>,
+        protected keyValueDiffers: KeyValueDiffers,
         @Inject(DOCUMENT) protected document: Document
     ) {
         super();
