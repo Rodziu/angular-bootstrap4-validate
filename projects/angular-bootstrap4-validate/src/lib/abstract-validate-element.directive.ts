@@ -19,6 +19,7 @@ import {ValidateConfigService} from './validate-config.service';
 
 export interface IValidateAbstractControl extends AbstractControl {
     __elementValidity?: ValidityState;
+    errorMessage?: Record<string, string>;
 }
 
 export const VALIDATE_ELEMENT = new InjectionToken('Validate element');
@@ -93,11 +94,21 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
             Object.entries(this.ngControl.errors || {})
                 .forEach(([error, errorValue]) => {
                     let msg = this.config.errorMessages[error];
+
                     if (
                         typeof this.errorMessage !== 'undefined'
                         && typeof this.errorMessage[error] !== 'undefined'
                     ) {
                         msg = this.errorMessage[error];
+                    } else if (this.ngControl.control !== null) {
+                        const control: IValidateAbstractControl = this.ngControl.control;
+
+                        if (
+                            typeof control.errorMessage !== 'undefined'
+                            && typeof control.errorMessage[error] !== 'undefined'
+                        ) {
+                            msg = control.errorMessage[error];
+                        }
                     }
 
                     if (msg) {

@@ -3,8 +3,7 @@
  *  Copyright (c) 2019-2021 Rodziu <mateusz.rohde@gmail.com>
  *  License: MIT
  */
-import {Directive, ElementRef, Host, Inject, Input, KeyValueDiffers, Optional, Self} from '@angular/core';
-import {FormControlName} from '@angular/forms';
+import {Directive, ElementRef, Inject, Input, KeyValueDiffers, Optional, Self} from '@angular/core';import {FormControlName} from '@angular/forms';
 import {AbstractValidateElementDirective, VALIDATE_ELEMENT} from '../abstract-validate-element.directive';
 import {ValidateConfigService} from '../validate-config.service';
 import {NgFormValidateDirective} from '../template-forms/ng-form-validate.directive';
