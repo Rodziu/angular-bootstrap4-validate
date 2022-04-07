@@ -13,6 +13,7 @@ export type validationMode = 'feedback' | 'tooltip';
 export class ValidateConfigService {
     mode: validationMode = 'feedback';
     inputGroupFix = true;
+    displayOnTouched = false;
     errorMessages: Record<string, string> = {
         required: 'This field is required',
         min: 'Minimum value is %s',

@@ -60,7 +60,7 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
             return;
         }
 
-        if (!this.isGroup && this.ngControl.dirty && this.ngControl.touched) {
+        if (!this.isGroup && this.ngControl.dirty && (!this.config.displayOnTouched || this.ngControl.touched)) {
             (this.feedbackElementContainer || this.elementRef.nativeElement.parentElement)
                 ?.classList.add('was-validated');
         }
