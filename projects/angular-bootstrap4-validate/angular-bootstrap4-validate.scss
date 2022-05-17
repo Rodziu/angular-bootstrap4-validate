@@ -34,14 +34,14 @@ form:not([ngNoForm]),ng-form,[ngForm],[formGroup],[formGroupName] {
           display: block;
         }
 
-        &:not(form) .form-check-input {
+        &:not(form):not(.ignore-group-validation) .form-check-input {
           ~ .form-check-label {
             color: $color;
           }
         }
 
         &.form-control,
-        &:not(form) .form-control { // mark .ng-(in)valid form-group children properly
+        &:not(form):not(.ignore-group-validation) .form-control { // mark .ng-(in)valid form-group children properly
           border-color: $color;
 
           @if $enable-validation-icons {
