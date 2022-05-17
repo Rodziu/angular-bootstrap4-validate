@@ -7,7 +7,7 @@ import {
     ContentChildren,
     Directive,
     ElementRef,
-    Host,
+    HostBinding,
     Inject,
     Input, KeyValueDiffers,
     Optional,
@@ -33,6 +33,9 @@ import {DOCUMENT} from '@angular/common';
 export class NgFormValidateDirective extends AbstractValidateElementDirective {
     @Input() validateMode: 'feedback' | 'tooltip';
     @Input() errorMessage?: Record<string, string>;
+
+    @HostBinding('class.ng-form') ngFormCss = true;
+    @HostBinding('class.has-validate-feedback') protected hasFeedback = false;
 
     @ContentChildren(NgFormValidateDirective, {descendants: true})
     private children!: QueryList<NgFormValidateDirective>;

@@ -5,7 +5,6 @@
  */
 
 import {
-    AfterViewChecked,
     ElementRef,
     Injectable,
     InjectionToken,
@@ -16,6 +15,8 @@ import {
 import {AbstractControl, AbstractControlDirective} from '@angular/forms';
 import {NgFormValidateDirective} from './template-forms/ng-form-validate.directive';
 import {ValidateConfigService} from './validate-config.service';
+import {Subject} from 'rxjs';
+import {startWith, takeUntil} from 'rxjs/operators';
 
 export interface IValidateAbstractControl extends AbstractControl {
     __elementValidity?: ValidityState;
@@ -26,7 +27,7 @@ export const VALIDATE_ELEMENT = new InjectionToken('Validate element');
 
 // eslint-disable-next-line @angular-eslint/use-injectable-provided-in
 @Injectable()
-export abstract class AbstractValidateElementDirective implements AfterViewChecked, OnDestroy, OnInit {
+export abstract class AbstractValidateElementDirective implements OnInit, OnDestroy {
 
     abstract errorMessage?: Record<string, string>;
 
@@ -41,7 +42,10 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
     protected abstract config: ValidateConfigService;
     protected abstract keyValueDiffers: KeyValueDiffers;
     protected isGroup = false;
+    protected hasFeedback = false;
     protected feedbackElementContainer?: HTMLElement;
+
+    protected _destroy$ = new Subject<void>();
 
     // eslint-disable-next-line @angular-eslint/contextual-lifecycle
     ngOnInit(): void {
@@ -52,74 +56,82 @@ export abstract class AbstractValidateElementDirective implements AfterViewCheck
         if (!this.feedbackElementContainer && this.elementRef.nativeElement.classList.contains('form-group')) {
             this.feedbackElementContainer = this.elementRef.nativeElement;
         }
-    }
+        this.ngControl.statusChanges
+            ?.pipe(
+                startWith(this.ngControl.status),
+                takeUntil(this._destroy$)
+            )
+            .subscribe((status) => {
+                if (!this.ngFormValidate) {
+                    return;
+                }
 
-    // eslint-disable-next-line @angular-eslint/contextual-lifecycle
-    ngAfterViewChecked(): void {
-        if (!this.ngFormValidate) {
-            return;
-        }
+                if (
+                    !this.isGroup
+                    && this.ngControl.dirty
+                    && (!this.config.displayOnTouched || this.ngControl.touched)
+                ) {
+                    (this.feedbackElementContainer || this.elementRef.nativeElement.parentElement)
+                        ?.classList.add('was-validated');
+                }
 
-        if (!this.isGroup && this.ngControl.dirty && (!this.config.displayOnTouched || this.ngControl.touched)) {
-            (this.feedbackElementContainer || this.elementRef.nativeElement.parentElement)
-                ?.classList.add('was-validated');
-        }
+                if ( // prevent creating feedbackElement when it's not yet needed
+                    !this.feedbackElement
+                    && status === 'VALID'
+                ) {
+                    return;
+                }
 
-        if ( // prevent creating feedbackElement when it's not yet needed
-            !this.feedbackElement
-            && this.ngControl.valid
-        ) {
-            return;
-        }
-
-        if (!this.feedbackElement) {
-            const feedbackElement = this.createFeedBackElement();
-            if (!feedbackElement) {
-                return;
-            }
-            this.feedbackElement = feedbackElement;
-            if (this.config.inputGroupFix) {
-                this.inputGroupFix();
-            }
-
-            this.differ = this.keyValueDiffers.find({}).create();
-        }
-
-        if (!this.differ?.diff(this.ngControl.errors || {})) {
-            return;
-        }
-
-        this.errorMessages.length = 0;
-        if (this.ngControl.errors !== null) {
-            Object.entries(this.ngControl.errors || {})
-                .forEach(([error, errorValue]) => {
-                    let msg = this.config.errorMessages[error];
-
-                    if (
-                        typeof this.errorMessage !== 'undefined'
-                        && typeof this.errorMessage[error] !== 'undefined'
-                    ) {
-                        msg = this.errorMessage[error];
-                    } else if (this.ngControl.control !== null) {
-                        const control: IValidateAbstractControl = this.ngControl.control;
-
-                        if (
-                            typeof control.errorMessage !== 'undefined'
-                            && typeof control.errorMessage[error] !== 'undefined'
-                        ) {
-                            msg = control.errorMessage[error];
-                        }
+                if (!this.feedbackElement) {
+                    const feedbackElement = this.createFeedBackElement();
+                    if (!feedbackElement) {
+                        return;
+                    }
+                    this.feedbackElement = feedbackElement;
+                    if (this.config.inputGroupFix) {
+                        this.inputGroupFix();
                     }
 
-                    if (msg) {
-                        this.errorMessages.push(
-                            msg.replace('%s', this.getErrorValue(error, errorValue))
-                        );
-                    }
-                });
-        }
+                    this.differ = this.keyValueDiffers.find({}).create();
+                }
 
-        this.feedbackElement.textContent = this.errorMessages.join(',');
+                if (!this.differ?.diff(this.ngControl.errors || {})) {
+                    return;
+                }
+
+                this.errorMessages.length = 0;
+                if (this.ngControl.errors !== null) {
+                    Object.entries(this.ngControl.errors || {})
+                        .forEach(([error, errorValue]) => {
+                            let msg = this.config.errorMessages[error];
+
+                            if (
+                                typeof this.errorMessage !== 'undefined'
+                                && typeof this.errorMessage[error] !== 'undefined'
+                            ) {
+                                msg = this.errorMessage[error];
+                            } else if (this.ngControl.control !== null) {
+                                const control: IValidateAbstractControl = this.ngControl.control;
+
+                                if (
+                                    typeof control.errorMessage !== 'undefined'
+                                    && typeof control.errorMessage[error] !== 'undefined'
+                                ) {
+                                    msg = control.errorMessage[error];
+                                }
+                            }
+
+                            if (msg) {
+                                this.errorMessages.push(
+                                    msg.replace('%s', this.getErrorValue(error, errorValue))
+                                );
+                            }
+                        });
+                }
+
+                this.feedbackElement.textContent = this.errorMessages.join(',');
+                this.hasFeedback = !!this.errorMessages.length;
+            });
     }
 
     ngOnDestroy(): void {

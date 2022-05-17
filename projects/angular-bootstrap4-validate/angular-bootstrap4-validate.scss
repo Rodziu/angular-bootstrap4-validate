@@ -7,7 +7,7 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 
-form:not([ngNoForm]),ng-form,[ngForm],[formGroup],[formGroupName] {
+form:not([ngNoForm]),ng-form {
   .form-control, .custom-select, input[type="checkbox"], input[type="radio"] {
     box-shadow: none;
   }
@@ -34,14 +34,16 @@ form:not([ngNoForm]),ng-form,[ngForm],[formGroup],[formGroupName] {
           display: block;
         }
 
-        &:not(form):not(.ignore-group-validation) .form-check-input {
+        &:not(form):not(.ng-form):not(.ignore-group-validation) .form-check-input ,
+        &.has-validate-feedback .form-check-input {
           ~ .form-check-label {
             color: $color;
           }
         }
 
         &.form-control,
-        &:not(form):not(.ignore-group-validation) .form-control { // mark .ng-(in)valid form-group children properly
+        &:not(form):not(.ng-form):not(.ignore-group-validation) .form-control,
+        &.has-validate-feedback .form-control{ // mark .ng-(in)valid form-group children properly
           border-color: $color;
 
           @if $enable-validation-icons {

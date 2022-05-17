@@ -115,76 +115,78 @@
                         all <code>formControl</code> and <code>formControlName</code> directives.
                     </div>
                     <div class="card-body">
-                        <form [formGroup]="reactive" #reactiveForm="ngFormValidate">
-                            <div class="form-row">
-                                <div class="col-md-3 mb-3">
-                                    <label>First name</label>
-                                    <input type="text" class="form-control"
-                                           [formControl]="this.firstName">
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label>Last name</label>
-                                    <input type="text" class="form-control"
-                                           formControlName="last_name">
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label>Username</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">@</span>
-                                        </div>
+                        <form #reactiveForm="ngFormValidate">
+                            <div [formGroup]="reactive">
+                                <div class="form-row">
+                                    <div class="col-md-3 mb-3">
+                                        <label>First name</label>
                                         <input type="text" class="form-control"
-                                               formControlName="username">
+                                               [formControl]="this.firstName">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label>Last name</label>
+                                        <input type="text" class="form-control"
+                                               formControlName="last_name">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label>Username</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">@</span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   formControlName="username">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label>Gender</label>
+                                        <select class="form-control"
+                                                formControlName="gender">
+                                            <option></option>
+                                            <option>Male</option>
+                                            <option>Female</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <label>Gender</label>
-                                    <select class="form-control"
-                                            formControlName="gender">
-                                        <option></option>
-                                        <option>Male</option>
-                                        <option>Female</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-3 mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox"
-                                               formControlName="check" id="react_check">
-                                        <label class="form-check-label" for="react_check">
-                                            Agree to terms and conditions
-                                        </label>
+                                <div class="form-row">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   formControlName="check" id="react_check">
+                                            <label class="form-check-label" for="react_check">
+                                                Agree to terms and conditions
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3" formGroupName="radioGroup">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="react_radio1"
+                                                   formControlName="radio" value="1">
+                                            <label class="form-check-label" for="react_radio1">
+                                                Default radio
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="react_radio2"
+                                                   formControlName="radio" value="2">
+                                            <label class="form-check-label" for="react_radio2">
+                                                Second default radio
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 mb-3" formGroupName="radioGroup">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="react_radio1"
-                                               formControlName="radio" value="1">
-                                        <label class="form-check-label" for="react_radio1">
-                                            Default radio
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="react_radio2"
-                                               formControlName="radio" value="2">
-                                        <label class="form-check-label" for="react_radio2">
-                                            Second default radio
-                                        </label>
-                                    </div>
+                                <div class="alert alert-success" *ngIf="reactive.valid">
+                                    Form is valid!
                                 </div>
-                            </div>
-                            <div class="alert alert-success" *ngIf="reactive.valid">
-                                Form is valid!
-                            </div>
-                            <div class="d-flex" style="gap: .25rem">
-                                <button class="btn btn-primary" type="submit">Submit form</button>
-                                <button type="button" class="btn btn-secondary"
-                                        (click)="reactiveForm.resetValidation()">Reset
-                                </button>
-                                <button type="button" class="btn btn-secondary"
-                                        (click)="reactiveForm.showValidation()">Show validation
-                                </button>
+                                <div class="d-flex" style="gap: .25rem">
+                                    <button class="btn btn-primary" type="submit">Submit form</button>
+                                    <button type="button" class="btn btn-secondary"
+                                            (click)="reactiveForm.resetValidation()">Reset
+                                    </button>
+                                    <button type="button" class="btn btn-secondary"
+                                            (click)="reactiveForm.showValidation()">Show validation
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
