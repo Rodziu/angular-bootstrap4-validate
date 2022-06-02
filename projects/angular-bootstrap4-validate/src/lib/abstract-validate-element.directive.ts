@@ -70,6 +70,8 @@ export abstract class AbstractValidateElementDirective implements OnInit, OnDest
                     !this.isGroup
                     && this.ngControl.dirty
                     && (!this.config.displayOnTouched || this.ngControl.touched)
+                    && !this.elementRef.nativeElement.classList.contains('ng-form')
+                    && !this.elementRef.nativeElement.classList.contains('ignore-group-validation')
                 ) {
                     (this.feedbackElementContainer || this.elementRef.nativeElement.parentElement)
                         ?.classList.add('was-validated');
